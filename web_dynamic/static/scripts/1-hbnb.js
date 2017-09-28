@@ -1,16 +1,18 @@
 // amenities input
 $(document).ready(function () {
-  let amenity_ids = [];
-  console.log("Amenity_ids: " + amenity_ids);
-  $('input').change(function () {
-    if (this.checked) {
-      amenity_ids.push(:amenity_id);
-      $('DIV.amenities.h4').append(:amenity_name);
-      console.log("Push / Append: " + amenity_ids);
+  let amenityIds = [];
+  let amenityNames = [];
+  $('input').bind('click', function () {
+    let id = $(this).attr('data-id');
+    let name = $(this).attr('data-name');
+    if ($(this).is(':checked')) {
+      let idList = amenityIds.push(id);
+      let nameList = amenityNames.push(name);
+      $('DIV.amenities h4').text(amenityNames.sort().join(', '));
     } else {
-      amenity_ids.splice($.inArray(:amenity_id, amenity_ids), 1);
-      $('DIV.amenities.h4').detach(:amenity_name);
-      console.log("Remove / Detach " + amenity_ids);
+      amenityIds.splice($.inArray(id, amenityIds), 1);
+      amenityNames.splice($.inArray(name, amenityNames), 1);
+      $('DIV.amenities h4').text(amenityNames.sort().join(', '));
     }
   });
 });
