@@ -4,6 +4,8 @@
  */
 
 header {
+	display: flex;
+	flex-direction: row;
 	background-color: #FFFFFF;
 	background-image: url("../images/logo.png");
 	background-repeat: no-repeat;
@@ -11,4 +13,19 @@ header {
 	height: 70px;
 	width: 100%;
 	border-bottom: 1px solid #CCCCCC;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+#api_status {
+	display: flex;
+	background-color: #cccccc;
+	border-radius: 40px;
+	width: 40px;
+	height: 40px;
+	margin-right: 30px;
+}
+
+#api_status.available {
+	background-color: #ff545f;
 }
