@@ -1,5 +1,14 @@
 // Connect Place and Amenity
 $(document).ready(function () {
+ // function to help sort names properly
+  function compare (a, b) {
+  	let nameA = a.name.toUpperCase();
+    	let nameB = b.name.toUpperCase();
+   	if (nameA < nameB) { return -1; }
+    	if (nameA > nameB) { return 1; }
+    	return 0;
+  }
+  // Creating amenity object with id and name
   let amenityObj = {};
   $('input').bind('click', function () {
     let id = $(this).attr('data-id');
@@ -11,9 +20,11 @@ $(document).ready(function () {
     }
     // clear the div
     $('div.amenities h4').val('');
+
+    // Creates new array with values of amenityObj
     let newAmenityArray = $.map(amenityObj, function (value) {
 	    return value;
-    }).join(', ');
+    }).sort().join(', ');
     // replaces div with new array
     $('div.amenities h4').text(newAmenityArray);
   });
@@ -34,6 +45,9 @@ $(document).ready(function () {
     contentType: 'application/json; charset=utf-8',
     dataType: 'JSON'
   }).done(function (data) {
+	  // console.log(data);
+    data.sort(compare);
+    console.log(data);
     for (let i = 0; i < data.length; i++) {
       let place = data[i];
       let placeHtml = '<article><div class="title"><h2>' + place.name + '</h2><div class="price_by_night">' + place.price_by_night + '</div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description">' + place.description + '</div></article>';
