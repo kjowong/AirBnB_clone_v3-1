@@ -28,7 +28,12 @@ $(document).ready(function () {
       $('div#api_status').removeClass('available');
     }
   });
-
+  // function to sort names of place properly
+  function newSort (a, b) {
+   	let name1 = a.name.toUpperCase();
+    	let name2 = b.name.toUpperCase();
+    return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
+  }
   // Post Places http://0.0.0.0:5001/api/v1/places_search/
   $.ajax({
     type: 'POST',
@@ -37,9 +42,7 @@ $(document).ready(function () {
     contentType: 'application/json; charset=utf-8',
     dataType: 'JSON'
   }).done(function (data) {
- // function to help sort names properly
-    let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-    data.sort(collator.compare);
+    data.sort(newSort);
     for (let i = 0; i < data.length; i++) {
       let place = data[i];
       let placeHtml = '<article><div class="title"><h2>' + place.name + '</h2><div class="price_by_night">$' + place.price_by_night + '</div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description"><br />' + place.description + '</div></article>';
@@ -56,16 +59,7 @@ $(document).ready(function () {
       contentType: 'application/json; charset=utf-8',
       dataType: 'JSON'
     }).done(function (data) {
- // function to help sort names properly
-      console.log('Amenities Passed In: ', data);
-      function compare (a, b) {
-        let nameA = a.name.toUpperCase();
-        let nameB = b.name.toUpperCase();
-        if (nameA < nameB) { return -1; }
-        if (nameA > nameB) { return 1; }
-        return 0;
-      }
-      data.sort(compare);
+      data.sort(newSort);
       $('section.places').empty();
       for (let i = 0; i < data.length; i++) {
         let place = data[i];
