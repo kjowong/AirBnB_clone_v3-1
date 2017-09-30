@@ -1,4 +1,4 @@
-// Append Place to Article
+// Connect Place and Amenity
 $(document).ready(function () {
   let amenityObj = {};
   $('input').bind('click', function () {
