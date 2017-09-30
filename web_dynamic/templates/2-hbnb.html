@@ -60,12 +60,12 @@
 	    <h4>&nbsp;</h4>
 	    <ul class="popover">
 	      {% for state in states|dictsort %}
-	      <H2>{{ state[0] }}</H2>
-	      <UL>
+	      <h2>{{ state[0] }}</h2>
+	      <ul>
 		{% for city in state[1].cities|sort(attribute='name') %}
-		<LI>{{ city.name }}</LI>
+		<li>{{ city.name }}</li>
 		{% endfor %}
-	      </UL>
+	      </ul>
 	      {% endfor %}
 	    </ul>
 	  </div>
@@ -79,7 +79,10 @@
 	    <h4>&nbsp;</h4>
 	    <ul class="popover">
 	      {% for amenity in amens|sort(attribute='name') %}
-	      <LI><INPUT style="padding-right: 10px;" type="checkbox" data-id="{{ amenity.id }}" data-name="{{ amenity.name }}">{{ amenity.name }}</LI>
+	      <li>
+	      	<input type="checkbox" data-id="{{ amenity.id }}" data-name="{{ amenity.name }}">
+		{{ amenity.name }}
+	     </li>
 	      {% endfor %}
 	    </ul>
 	  </div>
