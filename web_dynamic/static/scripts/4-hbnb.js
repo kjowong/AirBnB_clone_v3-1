@@ -20,6 +20,7 @@ $(document).ready(function () {
     // replaces div with new array
     $('div.amenities h4').text(newAmenityArray);
   });
+
   // Request API http://0.0.0.0:5001/api/v1/status/
   $.get('http://0.0.0.0:5001/api/v1/status/', function (data, textStatus) {
     if (textStatus === 'success') {
@@ -28,28 +29,30 @@ $(document).ready(function () {
       $('div#api_status').removeClass('available');
     }
   });
+
   // function to sort names of place properly
   function nameSort (a, b) {
     let name1 = a.name.toUpperCase();
     let name2 = b.name.toUpperCase();
     return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
   }
-// ajax call function
+
+  // ajax call function
   function ajaxCall (url, params = {}) {
     $.ajax({
-	    type: 'POST',
-	    url: url,
-	    data: JSON.stringify(params),
-	    contentType: 'application/json; charset=utf-8',
-	    dataType: 'JSON'
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(params),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'JSON'
     }).done(function (data) {
-	    data.sort(nameSort);
-	    $('section.places').empty();
-	    for (let i = 0; i < data.length; i++) {
-      let place = data[i];
-      let placeHtml = '<article><div class="title"><h2>' + place.name + '</h2><div class="price_by_night">$' + place.price_by_night + '</div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description"><br />' + place.description + '</div></article>';
-      $('section.places').append(placeHtml);
-	    }
+      data.sort(nameSort);
+      $('section.places').empty();
+      for (let i = 0; i < data.length; i++) {
+        let place = data[i];
+        let placeHtml = '<article><div class="title"><h2>' + place.name + '</h2><div class="price_by_night">$' + place.price_by_night + '</div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description"><br />' + place.description + '</div></article>';
+        $('section.places').append(placeHtml);
+      }
     });
   }
 
