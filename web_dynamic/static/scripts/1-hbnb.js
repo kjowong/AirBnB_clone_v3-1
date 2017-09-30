@@ -10,13 +10,11 @@ $(document).ready(function () {
       delete amenityObj[id];
     }
     // clear the div
-    console.log('empty', $('div.amenities h4').val(''));
+    $('div.amenities h4').val('');
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
-    }).join(', ');
-    console.log('new array', newAmenityArray);
+    }).sort().join(', ');
     // replaces div with new array
     $('div.amenities h4').text(newAmenityArray);
   });
-  console.log(amenityObj);
 });
