@@ -14,6 +14,7 @@ app.url_map.strict_slashes = False
 host = os.getenv("HBNB_API_HOST", "0.0.0.0")
 port = os.getenv("HBNB_API_PORT", "5000")
 
+
 # begin flask page rendering
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -43,4 +44,4 @@ def hbnb_filters(the_id=None):
                            users=users, cache_id=cache_id)
 
 if __name__ == "__main__":
-   app.run(host=host, port=port)
+    app.run(host=host, port=port)
