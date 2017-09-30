@@ -12,7 +12,7 @@ $(document).ready(function () {
     // clear the div
     $('div.amenities h4').val('');
     let newAmenityArray = $.map(amenityObj, function (value) {
-	    return value;
+      return value;
     }).join(', ');
     // replaces div with new array
     $('div.amenities h4').text(newAmenityArray);
