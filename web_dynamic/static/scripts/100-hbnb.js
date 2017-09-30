@@ -79,14 +79,14 @@ $(document).ready(function () {
     }
   });
 
-  // function to sort names of place properly
+  // function to sort names properly with alphanumerical and lower/uppercase
   function nameSort (a, b) {
     let name1 = a.name.toUpperCase();
     let name2 = b.name.toUpperCase();
     return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
   }
 
-  // function to grab all users - separate get request
+  // self-invoking function to grab all users - separate get request
   usersPerPlaceObj = {};
   (function getUsersPlace () {
     $.get('http://0.0.0.0:5001/api/v1/users/', {}).done(function (data) {
@@ -95,8 +95,6 @@ $(document).ready(function () {
 	    }
   	});
   }());
- // usersPlace();
- // console.log(usersPerPlaceObj);
 /// ///////////////////////////////////////////////////////////////
   // ajax call function
   function ajaxCall (url, params = {}) {
@@ -123,31 +121,25 @@ $(document).ready(function () {
 	// variable with place's owner and description
         let placeOwnDescription = placeInfo.append($('<div>', { class: 'user'})).append($('<strong>', { text: 'Owner: ' + usersPerPlaceObj[place.user_id] })).append('<br />').append($('div', { class: 'description' })).append('<br />' + place.description);
 	// append place to the article, then append article to places section
-        article.append(placeInfo.append(placeOwnDescription));
+        placeInfo.append(placeOwnDescription);
+        // article.append(placeInfo.append(placeOwnDescription));
         let amenitiesPlace = {};
-        $.post('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities', JSON.stringify({})).done(function (data) {
+        $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities', {}).done(function (data) {
 	    for (let i = 0; i < data.length; i++) {
-		    let amenityId = data[i].id;
-		    let amenityName = data[i].name;
-		    amenitiesPlace['id'] = amenityId;
-		    amenitiesPlace['name'] = amenityName;
-	    }
-//          console.log(amenitiesPlace);
-          console.log(amenitiesPlace['id']);
-	  $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities/' + amenitiesPlace['id'], {}).done(function (data) 		  {
-    		console.log('AMEM_ID: ', data);
-      		});
-  	});
-
-//        function amensP (amenUrl) {
-  //        console.log($.get(amenUrl + '/' + amenitiesPlace.id, {}).done(function (date) {
-    //        console.log(data);
-      //    }));
-       // }
-
-        // amensP();
-    //    amen().then(amensP);
-
+		 amenitiesPlace[data[i].id] = data[i].name;
+	     }
+	     let amenityPerPlaceArray = $.map(amenitiesPlace, function (value) {
+			       return (value);
+	     });
+          let amenitiesInfo = $('<div>', { class: 'amenities'}).append($('<h3>', { text: 'Amenities'})).append($('<h4>'));
+	  let ulTag = $('<ul>', { class: 'popover'});
+	 $.each(amenityPerPlaceArray, function (index, value) {
+		 ulTag.append($('<li>', {text: value}));
+ 	});
+	 amenitiesInfo.append(ulTag);
+	 placeInfo.append(amenitiesInfo);
+	 article.append(placeInfo);
+  	  });
         $('section.places').append(article);
       }
     });
