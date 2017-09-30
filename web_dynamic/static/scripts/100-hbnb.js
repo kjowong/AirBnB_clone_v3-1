@@ -86,6 +86,18 @@ $(document).ready(function () {
     return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
   }
 
+  // function to grab all users - separate get request
+  usersPerPlaceObj = {};
+  (function getUsersPlace () {
+    $.get('http://0.0.0.0:5001/api/v1/users/', {}).done(function (data) {
+	    for (let i = 0; i < data.length; i++) {
+      usersPerPlaceObj[data[i].id] = data[i].first_name + ' ' + data[i].last_name;
+	    }
+  	});
+  }());
+ // usersPlace();
+ // console.log(usersPerPlaceObj);
+/// ///////////////////////////////////////////////////////////////
   // ajax call function
   function ajaxCall (url, params = {}) {
     $.ajax({
@@ -99,18 +111,44 @@ $(document).ready(function () {
       $('section.places').empty();
       for (let i = 0; i < data.length; i++) {
         let place = data[i];
+        // console.log(place);
         let name = '';
-        $.ajax({
-          type: 'GET',
-          url: 'http://0.0.0.0:5001/api/v1/users/' + place.user_id,
-          data: JSON.stringify({}),
-          contentType: 'application/json; charset=utf-8',
-          dataType: 'JSON'
-        }).done(function (data) {
-          name = data.first_name + ' ' + data.last_name;
-          let placeHtml = '<article><div class="title-wrapper"><div class="price_by_night">$' + place.price_by_night + '</div><div class="title"><h2>' + place.name + '</h2></div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="user"><strong>Owner: ' + name + '</strong></div><div class="description"><br />' + place.description + '</div></article>';
-          $('section.places').append(placeHtml);
-        });
+	// article tag
+        let article = $('<article>');
+	// variable with place's main info
+        let placeInfo = $('<div>').append($('<div>', { class: 'price_by_night', text: '$' + place.price_by_night})).append($('<div>', { class: 'title'})).append($('<h2>', { text: place.name}));
+	// variable with place's icon information
+        let placeIconInfo = '<div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div>';
+        placeInfo.append(placeIconInfo);
+	// variable with place's owner and description
+        let placeOwnDescription = placeInfo.append($('<div>', { class: 'user'})).append($('<strong>', { text: 'Owner: ' + usersPerPlaceObj[place.user_id] })).append('<br />').append($('div', { class: 'description' })).append('<br />' + place.description);
+	// append place to the article, then append article to places section
+        article.append(placeInfo.append(placeOwnDescription));
+        let amenitiesPlace = {};
+        $.post('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities', JSON.stringify({})).done(function (data) {
+	    for (let i = 0; i < data.length; i++) {
+		    let amenityId = data[i].id;
+		    let amenityName = data[i].name;
+		    amenitiesPlace['id'] = amenityId;
+		    amenitiesPlace['name'] = amenityName;
+	    }
+//          console.log(amenitiesPlace);
+          console.log(amenitiesPlace['id']);
+	  $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities/' + amenitiesPlace['id'], {}).done(function (data) 		  {
+    		console.log('AMEM_ID: ', data);
+      		});
+  	});
+
+//        function amensP (amenUrl) {
+  //        console.log($.get(amenUrl + '/' + amenitiesPlace.id, {}).done(function (date) {
+    //        console.log(data);
+      //    }));
+       // }
+
+        // amensP();
+    //    amen().then(amensP);
+
+        $('section.places').append(article);
       }
     });
   }
