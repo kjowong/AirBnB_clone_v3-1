@@ -1,3 +1,5 @@
+const failed = '<h1 class="nope">No places found....</h1><img src="../static/images/rage-horror.svg" id="fail-img"><h1 class="nope">Maybe you just fail at life</h1>';
+
 // Only load when document is ready
 $(document).ready(function () {
   // Request API http://0.0.0.0:5001/api/v1/status/
@@ -112,13 +114,14 @@ $(document).ready(function () {
 
   // Ajax call function for Places
   function ajaxCall (url, params = {}) {
-    $.ajax({
+    return $.ajax({
       type: 'POST',
       url: url,
       data: JSON.stringify(params),
       contentType: 'application/json; charset=utf-8',
       dataType: 'JSON'
     }).done(function (data) {
+      if (data.length === 0) { $(failed).appendTo('main'); }
       data.sort(nameSort);
 
       // Empties out the place's section
@@ -270,7 +273,7 @@ $(document).ready(function () {
   });
 
 // Ajax request for all Places
-  ajaxCall('http://0.0.0.0:5001/api/v1/places_search/');
+//  ajaxCall('http://0.0.0.0:5001/api/v1/places_search/');
 
 // Ajax request for Places with selected Amenities, States, and Cities
   $('button').on('click', function () {
