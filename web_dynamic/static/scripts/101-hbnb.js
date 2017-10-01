@@ -212,8 +212,10 @@ $(document).ready(function () {
             userWrap.append(userInfo);
             ulTag.append(userWrap);
 
+            // Converts text in reviewsPlace to html
+            let reviewsText = $('<p>').html(reviewsPlace.text);
             // Variable with the review's text, append to the ul tag
-            let userReview = $('<p>', {text: reviewsPlace.text});
+            let userReview = $(reviewsText);
             ulTag.append(userReview);
           }
 
