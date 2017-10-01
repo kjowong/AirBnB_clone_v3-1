@@ -15,14 +15,7 @@ $(document).ready(function () {
     // clear the div
     $('div.locations h4').val('');
 
-    // Creates new array with values of stateObj and cityObj
-    let locationObj = Object.assign({}, stateObj, cityObj);
-    let newLocationArray = $.map(locationObj, function (value) {
-      return value;
-    }).sort().join(', ');
-
-    // replaces div with new array
-    $('div.locations h4').text(newLocationArray);
+    locationArray(stateObj, cityObj);
   });
 
   // Creates cityObj
@@ -39,15 +32,23 @@ $(document).ready(function () {
     // clear the div
     $('div.locations h4').val('');
 
-    // Creates new array with values of stateObj and cityObj
+    locationArray(stateObj, cityObj);
+  });
+
+  // Creates new array with values of stateObj and cityObj
+  function locationArray (stateObj, cityObj) {
     let locationObj = Object.assign({}, stateObj, cityObj);
     let newLocationArray = $.map(locationObj, function (value) {
       return value;
     }).sort().join(', ');
 
     // replaces div with new array
-    $('div.locations h4').text(newLocationArray);
-  });
+    if (newLocationArray.length > 0) {
+      $('div.locations h4').text(newLocationArray);
+    } else {
+      $('div.locations h4').text('\u00A0');
+    }
+  }
 
   // Creating amenity object with id and name
   let amenityObj = {};
@@ -60,14 +61,18 @@ $(document).ready(function () {
       delete amenityObj[id];
     }
     // clear the div
-    $('div.amenities h4').val('');
+    $('div.amenities h4').val(' ');
 
     // Creates new array with values of amenityObj
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
     // replaces div with new array
-    $('div.amenities h4').text(newAmenityArray);
+    if (newAmenityArray.length > 0) {
+      $('div.amenities h4').text(newAmenityArray);
+    } else {
+      $('div.amenities h4').text('\u00A0');
+    }
   });
 
   // Request API http://0.0.0.0:5001/api/v1/status/
