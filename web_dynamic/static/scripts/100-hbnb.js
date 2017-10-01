@@ -117,6 +117,7 @@ $(document).ready(function () {
         let placeIconInfo = '<div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div>';
         placeInfo.append(placeIconInfo);
         // variable with place's owner and description
+        if (!place.description) { place.description = ''; }
         let placeOwnDescription = placeInfo.append($('<div>', {class: 'user'})).append($('<strong>', {text: 'Owner: ' + usersPerPlaceObj[place.user_id]})).append('<br />').append($('div', {class: 'description'})).append('<br />' + place.description);
         // append place to the article, then append article to places section
         placeInfo.append(placeOwnDescription);
