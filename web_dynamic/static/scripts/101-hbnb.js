@@ -1,6 +1,5 @@
 // Connect Place and Amenity
 $(document).ready(function () {
-  // Creating location, state, and city objects with id and name
   // Creates stateObj
   let stateObj = {};
   $('div.locations ul.popover li h2 input').bind('click', function () {
@@ -11,18 +10,7 @@ $(document).ready(function () {
     } else {
       delete stateObj[id];
     }
-
-    // clear the div
-    $('div.locations h4').val('');
-
-    // Creates new array with values of stateObj and cityObj
-    let locationObj = Object.assign({}, stateObj, cityObj);
-    let newLocationArray = $.map(locationObj, function (value) {
-      return value;
-    }).sort().join(', ');
-
-    // replaces div with new array
-    $('div.locations h4').text(newLocationArray);
+    locationArray(stateObj, cityObj);
   });
 
   // Creates cityObj
@@ -35,19 +23,26 @@ $(document).ready(function () {
     } else {
       delete cityObj[id];
     }
+    locationArray(stateObj, cityObj);
+  });
 
-    // clear the div
-    $('div.locations h4').val('');
-
-    // Creates new array with values of stateObj and cityObj
+  // Creates new array with values of stateObj and cityObj
+  function locationArray (stateObj, cityObj) {
     let locationObj = Object.assign({}, stateObj, cityObj);
     let newLocationArray = $.map(locationObj, function (value) {
       return value;
     }).sort().join(', ');
 
+    // clear the div
+    $('div.locations h4').val('');
+
     // replaces div with new array
-    $('div.locations h4').text(newLocationArray);
-  });
+    if (newLocationArray.length > 0) {
+      $('div.locations h4').text(newLocationArray);
+    } else {
+      $('div.locations h4').text('\u00A0');
+    }
+  }
 
   // Creating amenity object with id and name
   let amenityObj = {};
@@ -59,15 +54,21 @@ $(document).ready(function () {
     } else {
       delete amenityObj[id];
     }
-    // clear the div
-    $('div.amenities h4').val('');
 
     // Creates new array with values of amenityObj
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
+
+    // clear the div
+    $('div.amenities h4').val(' ');
+
     // replaces div with new array
-    $('div.amenities h4').text(newAmenityArray);
+    if (newAmenityArray.length > 0) {
+      $('div.amenities h4').text(newAmenityArray);
+    } else {
+      $('div.amenities h4').text('\u00A0');
+    }
   });
 
   // Request API http://0.0.0.0:5001/api/v1/status/
@@ -79,24 +80,24 @@ $(document).ready(function () {
     }
   });
 
-  // function to sort names properly with alphanumerical and lower/uppercase
+  // helper compare function to natural sort names with alphanumerical and lower/uppercase
   function nameSort (a, b) {
     let name1 = a.name.toUpperCase();
     let name2 = b.name.toUpperCase();
     return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
   }
 
-  // self-invoking function to grab all users - separate get request
-  usersPerPlaceObj = {};
+  // self invoking .get() for Users per Place
+  let usersPerPlaceObj = {};
   (function getUsersPlace () {
     $.get('http://0.0.0.0:5001/api/v1/users/', {}).done(function (data) {
-	    for (let i = 0; i < data.length; i++) {
-      usersPerPlaceObj[data[i].id] = data[i].first_name + ' ' + data[i].last_name;
-	    }
-  	});
+      for (let i = 0; i < data.length; i++) {
+        usersPerPlaceObj[data[i].id] = data[i].first_name + ' ' + data[i].last_name;
+      }
+    });
   }());
-/// ///////////////////////////////////////////////////////////////
-  // ajax call function
+
+  // ajax call function for Places
   function ajaxCall (url, params = {}) {
     $.ajax({
       type: 'POST',
@@ -109,78 +110,66 @@ $(document).ready(function () {
       $('section.places').empty();
       for (let i = 0; i < data.length; i++) {
         let place = data[i];
-        // console.log(place);
-        let name = '';
-	// article tag
         let article = $('<article>');
-	// variable with place's main info
-        let placeInfo = $('<div>').append($('<div>', { class: 'price_by_night', text: '$' + place.price_by_night})).append($('<div>', { class: 'title'})).append($('<h2>', { text: place.name}));
-	// variable with place's icon information
+        // variable with place's main info
+        let placeInfo = $('<div>').append($('<div>', {class: 'price_by_night', text: '$' + place.price_by_night})).append($('<div>', {class: 'title'})).append($('<h2>', {text: place.name}));
+        // variable with place's icon information
         let placeIconInfo = '<div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div>';
         placeInfo.append(placeIconInfo);
-	// variable with place's owner and description
-        let placeOwnDescription = placeInfo.append($('<div>', { class: 'user'})).append($('<strong>', { text: 'Owner: ' + usersPerPlaceObj[place.user_id] })).append('<br />').append($('div', { class: 'description' })).append('<br />' + place.description);
-	// append place to the article, then append article to places section
+        // variable with place's owner and description
+        if (!place.description) { place.description = ''; }
+        let placeOwnDescription = placeInfo.append($('<div>', {class: 'user'})).append($('<strong>', {text: 'Owner: ' + usersPerPlaceObj[place.user_id]})).append('<br />').append($('div', {class: 'description'})).append('<br />' + place.description);
+        // append place to the article, then append article to places section
         placeInfo.append(placeOwnDescription);
-        // article.append(placeInfo.append(placeOwnDescription));
+
         let amenitiesPlace = {};
         $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities', {}).done(function (data) {
-	    for (let i = 0; i < data.length; i++) {
-		 amenitiesPlace[data[i].id] = data[i].name;
-	     }
-	     let amenityPerPlaceArray = $.map(amenitiesPlace, function (value) {
-			       return (value);
-	     });
-          let amenitiesInfo = $('<div>', { class: 'amenities'}).append($('<h2>', { text: 'Amenities'}));
-	  let ulTag = $('<ul>');
-	 $.each(amenityPerPlaceArray, function (index, value) {
-		 ulTag.append($('<li>', {text: value}));
- 	});
-	 amenitiesInfo.append(ulTag);
-	 placeInfo.append(amenitiesInfo);
+          for (let i = 0; i < data.length; i++) {
+            amenitiesPlace[data[i].id] = data[i].name;
+          }
+          let amenityPerPlaceArray = $.map(amenitiesPlace, function (value) {
+            return (value);
+          });
+          let amenitiesInfo = $('<div>', {class: 'amenities'}).append($('<h2>', {text: 'Amenities'}));
+          let ulTag = $('<ul>');
+          $.each(amenityPerPlaceArray, function (index, value) {
+            ulTag.append($('<li>', {text: value}));
+          });
+          amenitiesInfo.append(ulTag);
+          placeInfo.append(amenitiesInfo);
         });
-		 let reviewsPlace = {};
-      		$.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', {}).done(function (data) {
-        for (let i = 0; i < data.length; i++) {
-          	reviewsPlace['user_id'] = data[i].user_id;
-          	reviewsPlace['text'] = data[i].text;
-          	let dateString = data[i].created_at.toString();
-          	reviewsPlace['created_at'] = dateString;
-        }
-       // let reviewPerPlaceArray = $.map(reviewsPlace, function (value) {
-         // return (value);
-       // });
-        let reviewsInfo = $('<div>', { class: 'reviews' }).append($('<h2>', { text: 'Reviews'}));
-        let ulTag = $('<ul>');
-       // console.log('REVIEWS PER PLACE', reviewsPlace);
-     //   $.each(reviewsPlace, function (key, value) {
-        if (usersPerPlaceObj[reviewsPlace.user_id]) {
-          	let userInfo = $('<h3>', { text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' the ' + reviewsPlace.created_at });
-          let userWrap = $('<li>');
-          userWrap.append(userInfo);
-	 	ulTag.append(userWrap);
-          let userReview = $('<p>', { text: reviewsPlace.text });
-          ulTag.append(userReview);
-        }
-              // });
-        // ulTag.append(user);
-        reviewsInfo.append(ulTag);
-        placeInfo.append(reviewsInfo);
-       // article.append(placeInfo);
-      });
-//        console.log('REVIEW OBJECT', reviewsPlace);
- //       reviewsInfo.append(ulTag);
+	  let reviewsPlace = {};
+	  $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', {}).done(function (data) {
+	      for (let i = 0; i < data.length; i++) {
+		  reviewsPlace['user_id'] = data[i].user_id;
+		  reviewsPlace['text'] = data[i].text;
+		  let dateString = new Date(data[i].created_at).toString().split(' ');
+		  dateString = dateString[1] + ' ' + dateString[2] + ' ' + dateString[3];
+		  reviewsPlace['created_at'] = dateString;
+      	      }
+	      let reviewsInfo = $('<div>', { class: 'reviews' }).append($('<h2>', { text: 'Reviews'}));
+	      let ulTag = $('<ul>');
+    if (usersPerPlaceObj[reviewsPlace.user_id]) {
+		  let userInfo = $('<h3>', { text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' on ' + reviewsPlace.created_at });
+		  let userWrap = $('<li>');
+		  userWrap.append(userInfo);
+		  ulTag.append(userWrap);
+		  let userReview = $('<p>', { text: reviewsPlace.text });
+		  ulTag.append(userReview);
+    }
+    reviewsInfo.append(ulTag);
+    placeInfo.append(reviewsInfo);
+	  });
         article.append(placeInfo);
-
         $('section.places').append(article);
       }
     });
   }
 
-// Post Places http://0.0.0.0:5001/api/v1/places_search/
+// ajax request for all Places
   ajaxCall('http://0.0.0.0:5001/api/v1/places_search/');
 
-// Post Places + Amenities + States + Cities
+// ajax request for Places with selected Amenities, States, and Cities
   $('button').on('click', function () {
     ajaxCall('http://0.0.0.0:5001/api/v1/places_search/', {'amenities': amenityObj, 'states': stateObj, 'cities': cityObj});
   });
