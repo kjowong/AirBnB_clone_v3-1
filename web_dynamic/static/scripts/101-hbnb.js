@@ -148,7 +148,7 @@ $(document).ready(function () {
             reviewsPlace['created_at'] = dateString;
           }
           let reviewsInfo = $('<div>', {class: 'reviews'}).append($('<h2>', {text: 'Reviews'}).append($('<span>', {text: 'Show'})));
-          let ulTag = $('<ul>');
+          let ulTag = $('<ul>', {class: 'toggle_reviews'});
           if (usersPerPlaceObj[reviewsPlace.user_id]) {
             let userInfo = $('<h3>', {text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' on ' + reviewsPlace.created_at});
             let userWrap = $('<li>');
@@ -169,7 +169,7 @@ $(document).ready(function () {
   // show / hide Reviews section
   $(document).on('click', 'div.reviews h2 span', function () {
     $(this).text($(this).text() === 'Show' ? 'Hide' : 'Show');
-    $('div.reviews ul').toggle();
+    $('div.reviews ul.toggle_reviews').toggle();
   });
 
 // ajax request for all Places

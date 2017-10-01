@@ -123,6 +123,10 @@
 	margin: 5px 0 0 0;
 }
 
+.container .places .reviews .toggle_reviews {
+	display: none;
+}
+
 @media screen and (max-width: 600px) {
 
 	.container .places .information {
