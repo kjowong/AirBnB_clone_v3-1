@@ -99,7 +99,7 @@ def places_search():
         result = [place.to_json() for place in all_places]
         return jsonify(result)
     places_amenities = []
-    if amenities and len(amenities) > 0:
+    if amenities:
         amenities = set([
             a_id for a_id in amenities if storage.get('Amenity', a_id)])
         for p in all_places:
