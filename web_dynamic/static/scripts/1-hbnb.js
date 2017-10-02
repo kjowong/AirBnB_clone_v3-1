@@ -16,15 +16,19 @@ $(document).ready(function () {
       delete amenityObj[id];
     }
 
-    // Clear the div
-    $('div.amenities h4').val('');
-
     // Creates new array from amenity objects values
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
 
+    // Clear the div
+    $('div.amenities h4').val('');
+
     // Replaces div with new array
-    $('div.amenities h4').text(newAmenityArray);
+    if (newAmenityArray.length > 0) {
+      $('div.amenities h4').text(newAmenityArray);
+    } else {
+      $('div.amenities h4').text('\u00A0');
+    }
   });
 });

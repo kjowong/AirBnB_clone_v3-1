@@ -16,16 +16,20 @@ $(document).ready(function () {
       delete amenityObj[id];
     }
 
-    // Clear the div
-    $('div.amenities h4').val('');
-
     // Creates new array from amenity object values
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).join(', ');
 
-    // Replaces div with new array
-    $('div.amenities h4').text(newAmenityArray);
+    // Clear the div
+    $('div.amenities h4').val('');
+
+    // replaces div with new array
+    if (newAmenityArray.length > 0) {
+      $('div.amenities h4').text(newAmenityArray);
+    } else {
+      $('div.amenities h4').text('\u00A0');
+    }
   });
 
   // Request API http://0.0.0.0:5001/api/v1/status/
@@ -55,7 +59,7 @@ $(document).ready(function () {
     data.sort(nameSort);
     for (let i = 0; i < data.length; i++) {
       let place = data[i];
-      let placeHtml = '<article><div class="title"><h2>' + place.name + '</h2><div class="price_by_night">$' + place.price_by_night + '</div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description">' + place.description + '</div></article>';
+      let placeHtml = '<article><div><div class="price_by_night">$' + place.price_by_night + '</div><div class="title"><h2>' + place.name + '</h2></div></div><div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div><div class="description"><br />' + place.description + '</div></article>';
       $('section.places').append(placeHtml);
     }
   });
