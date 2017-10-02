@@ -96,6 +96,15 @@
 	border-bottom: 1px solid #DDDDDD;
 }
 
+.container .places .reviews h2 {
+        position: relative;
+}
+
+.container .places .reviews h2 span {
+    float: right;
+    font-size: 12px;
+}
+
 .container .places .amenities ul,
 .container .places .reviews ul {
 	list-style-type: none;
@@ -112,6 +121,10 @@
 
 .container .places .reviews h3 {
 	margin: 5px 0 0 0;
+}
+
+.container .places .reviews .toggle_reviews {
+	display: none;
 }
 
 @media screen and (max-width: 600px) {
