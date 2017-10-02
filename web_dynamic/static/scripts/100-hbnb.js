@@ -129,7 +129,7 @@ $(document).ready(function () {
           let amenityPerPlaceArray = $.map(amenitiesPlace, function (value) {
             return (value);
           });
-          let amenitiesInfo = $('<div>').append($('<h2>', {text: 'Amenities'}));
+          let amenitiesInfo = $('<div>', {class: 'amenities'}).append($('<h2>', {text: 'Amenities'}));
           let ulTag = $('<ul>');
           $.each(amenityPerPlaceArray, function (index, value) {
             ulTag.append($('<li>', {text: value}));
