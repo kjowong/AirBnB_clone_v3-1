@@ -138,33 +138,39 @@ $(document).ready(function () {
           amenitiesInfo.append(ulTag);
           placeInfo.append(amenitiesInfo);
         });
-	  let reviewsPlace = {};
-	  $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', {}).done(function (data) {
-	      for (let i = 0; i < data.length; i++) {
-		  reviewsPlace['user_id'] = data[i].user_id;
-		  reviewsPlace['text'] = data[i].text;
-		  let dateString = new Date(data[i].created_at).toString().split(' ');
-		  dateString = dateString[1] + ' ' + dateString[2] + ' ' + dateString[3];
-		  reviewsPlace['created_at'] = dateString;
-      	      }
-	      let reviewsInfo = $('<div>', { class: 'reviews' }).append($('<h2>', { text: 'Reviews'}));
-	      let ulTag = $('<ul>');
-    if (usersPerPlaceObj[reviewsPlace.user_id]) {
-		  let userInfo = $('<h3>', { text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' on ' + reviewsPlace.created_at });
-		  let userWrap = $('<li>');
-		  userWrap.append(userInfo);
-		  ulTag.append(userWrap);
-		  let userReview = $('<p>', { text: reviewsPlace.text });
-		  ulTag.append(userReview);
-    }
-    reviewsInfo.append(ulTag);
-    placeInfo.append(reviewsInfo);
-	  });
+        let reviewsPlace = {};
+        $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', {}).done(function (data) {
+          for (let i = 0; i < data.length; i++) {
+            reviewsPlace['user_id'] = data[i].user_id;
+            reviewsPlace['text'] = data[i].text;
+            let dateString = new Date(data[i].created_at).toString().split(' ');
+            dateString = dateString[1] + ' ' + dateString[2] + ' ' + dateString[3];
+            reviewsPlace['created_at'] = dateString;
+          }
+          let reviewsInfo = $('<div>', {class: 'reviews'}).append($('<h2>', {text: 'Reviews'}).append($('<span>', {text: 'Show'})));
+          let ulTag = $('<ul>');
+          if (usersPerPlaceObj[reviewsPlace.user_id]) {
+            let userInfo = $('<h3>', {text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' on ' + reviewsPlace.created_at});
+            let userWrap = $('<li>');
+            userWrap.append(userInfo);
+            ulTag.append(userWrap);
+            let userReview = $('<p>', {text: reviewsPlace.text});
+            ulTag.append(userReview);
+          }
+          reviewsInfo.append(ulTag);
+          placeInfo.append(reviewsInfo);
+        });
         article.append(placeInfo);
         $('section.places').append(article);
       }
     });
   }
+
+  // show / hide Reviews section
+  $(document).on('click', 'div.reviews h2 span', function () {
+    $(this).text($(this).text() === 'Show' ? 'Hide' : 'Show');
+    $('div.reviews ul').toggle();
+  });
 
 // ajax request for all Places
   ajaxCall('http://0.0.0.0:5001/api/v1/places_search/');

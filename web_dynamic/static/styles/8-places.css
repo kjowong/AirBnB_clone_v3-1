@@ -96,6 +96,15 @@
 	border-bottom: 1px solid #DDDDDD;
 }
 
+.container .places .reviews h2 {
+        position: relative;
+}
+
+.container .places .reviews h2 span {
+    float: right;
+    font-size: 12px;
+}
+
 .container .places .amenities ul,
 .container .places .reviews ul {
 	list-style-type: none;
