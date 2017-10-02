@@ -10,15 +10,21 @@ $(document).ready(function () {
     } else {
       delete amenityObj[id];
     }
-    // clear the div
-    $('div.amenities h4').val('');
 
     // Creates new array with values of amenityObj
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
+
+    // clear the div
+    $('div.amenities h4').val('');
+
     // replaces div with new array
-    $('div.amenities h4').text(newAmenityArray);
+    if (newAmenityArray.length > 0) {
+      $('div.amenities h4').text(newAmenityArray);
+    } else {
+      $('div.amenities h4').text('\u00A0');
+    }
   });
 
   // Request API http://0.0.0.0:5001/api/v1/status/
