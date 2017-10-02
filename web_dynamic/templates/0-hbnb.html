@@ -95,16 +95,13 @@
 	  {% for place in places|sort(attribute='name') %}
 
 	  <article>
-
-	    <div class="title">
-
-	      <h2>{{ place.name }}</h2>
-
+	    <div>
 	      <div class="price_by_night">
-
 		${{ place.price_by_night }}
-
 	      </div>
+	    <div class="title">
+	      <h2>{{ place.name }}</h2>
+	    </div>
 	    </div>
 	    <div class="information">
 	      <div class="max_guest">
