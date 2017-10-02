@@ -130,7 +130,7 @@ $(document).ready(function () {
       for (let i = 0; i < data.length; i++) {
         let place = data[i];
 
-	// Creates the article tags
+        // Creates the article tags
         let article = $('<article>');
 
         // Variable with place's main info
@@ -139,22 +139,22 @@ $(document).ready(function () {
         // Variable with place's icon information
         let placeIconInfo = '<div class="information"><div class="max_guest"><i class="fa fa-users fa-3x" aria-hidden="true"></i><br />' + place.max_guest + ' Guests</div><div class="number_rooms"><i class="fa fa-bed fa-3x" aria-hidden="true"></i><br />' + place.number_rooms + ' Bedrooms</div><div class="number_bathrooms"><i class="fa fa-bath fa-3x" aria-hidden="true"></i><br />' + place.number_bathrooms + ' Bathroom</div></div>';
 
-	// Appends all the place's icon's info to main place tag
+        // Appends all the place's icon's info to main place tag
         placeInfo.append(placeIconInfo);
 
         // If there description is null, set to empty string so null doesn't append
         if (!place.description) { place.description = ''; }
 
-	// Variable with place's owner and description, appending to main place tag
+        // Variable with place's owner and description, appending to main place tag
         let placeOwnDescription = placeInfo.append($('<div>', {class: 'user'})).append($('<strong>', {text: 'Owner: ' + usersPerPlaceObj[place.user_id]})).append('<br />').append($('div', {class: 'description'})).append('<br />' + place.description);
 
-	// Append place to the article, then append article to places section
+        // Append place to the article, then append article to places section
         placeInfo.append(placeOwnDescription);
 
         // Creates Amenities object for each place
         let amenitiesPlace = {};
 
-	// Get request to grab all amenities for each place
+        // Get request to grab all amenities for each place
         $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/amenities', {}).done(function (data) {
           for (let i = 0; i < data.length; i++) {
             amenitiesPlace[data[i].id] = data[i].name;
@@ -165,18 +165,18 @@ $(document).ready(function () {
             return (value);
           });
 
-	  // Variable with the amenities' information
+          // Variable with the amenities' information
           let amenitiesInfo = $('<div>', {class: 'amenities'}).append($('<h2>', {text: 'Amenities'}));
 
-	  // Creates a ul tag
+          // Creates a ul tag
           let ulTag = $('<ul>');
 
-	  // Goes over each value in the amenities array created before, appends the value in an li tag to the ul tag
+          // Goes over each value in the amenities array created before, appends the value in an li tag to the ul tag
           $.each(amenityPerPlaceArray, function (index, value) {
             ulTag.append($('<li>', {text: value}));
           });
 
-	  // Appends the ul tag with list of amenities to amnenities information then to the main place tag - appends place to article tag
+          // Appends the ul tag with list of amenities to amnenities information then to the main place tag - appends place to article tag
           amenitiesInfo.append(ulTag);
           placeInfo.append(amenitiesInfo);
           article.append(placeInfo);
