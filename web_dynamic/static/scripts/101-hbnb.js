@@ -168,8 +168,8 @@ $(document).ready(function () {
 
   // show / hide Reviews section
   $(document).on('click', 'div.reviews h2 span', function () {
+    $(this).closest('div.reviews').find('ul.toggle_reviews').toggle();
     $(this).text($(this).text() === 'Show' ? 'Hide' : 'Show');
-    $('div.reviews ul.toggle_reviews').toggle();
   });
 
 // ajax request for all Places
