@@ -1,25 +1,30 @@
-// Connect Place and Amenity
+// Only load when document is ready
 $(document).ready(function () {
-  // Creating amenity object with id and name
+  // Creating amenity object
   let amenityObj = {};
+
+  // Binds a click event to input tag
   $('input').bind('click', function () {
+    // Grabs attribute value from the input tag
     let id = $(this).attr('data-id');
     let name = $(this).attr('data-name');
+
+    // If input is checked, store attributes in the amenity object
     if ($(this).is(':checked')) {
       amenityObj[id] = name;
     } else {
       delete amenityObj[id];
     }
 
-    // Creates new array with values of amenityObj
+    // Creates new array from amenity object values
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
 
-    // clear the div
+    // Clear the div
     $('div.amenities h4').val('');
 
-    // replaces div with new array
+    // Replaces div with new array
     if (newAmenityArray.length > 0) {
       $('div.amenities h4').text(newAmenityArray);
     } else {
@@ -36,14 +41,14 @@ $(document).ready(function () {
     }
   });
 
-  // function to sort names of place properly
+  // Helper compare function to natural sort names with alphanumerical and lower/uppercase
   function nameSort (a, b) {
     let name1 = a.name.toUpperCase();
     let name2 = b.name.toUpperCase();
     return name1.localeCompare(name2, undefined, { numeric: true, sensitivity: 'base' });
   }
 
-  // ajax call function
+  // Ajax call function for Places
   function ajaxCall (url, params = {}) {
     $.ajax({
       type: 'POST',

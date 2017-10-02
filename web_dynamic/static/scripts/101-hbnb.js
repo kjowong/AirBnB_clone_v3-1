@@ -1,10 +1,15 @@
-// Connect Place and Amenity
+// Only load when document is ready
 $(document).ready(function () {
   // Creates stateObj
   let stateObj = {};
+
+  // Binds a click event to the input tag for States
   $('div.locations ul.popover li h2 input').bind('click', function () {
+    // Grabs attribute value from the input tag
     let id = $(this).attr('data-id');
     let name = $(this).attr('data-name');
+
+    // If input is checked, store attributes in the state object
     if ($(this).is(':checked')) {
       stateObj[id] = name;
     } else {
@@ -15,9 +20,14 @@ $(document).ready(function () {
 
   // Creates cityObj
   let cityObj = {};
+
+  // Binds a click event to the input tag for City
   $('div.locations ul.popover li input').bind('click', function () {
+    // Grabs attribute value from the input tag
     let id = $(this).attr('data-id');
     let name = $(this).attr('data-name');
+
+    // If input is checked, store attributes in the city object
     if ($(this).is(':checked')) {
       cityObj[id] = name;
     } else {
@@ -44,18 +54,23 @@ $(document).ready(function () {
     }
   }
 
-  // Creating amenity object with id and name
+  // Creating amenity object
   let amenityObj = {};
+
+  // Binds a click event to the input tag for Amenity
   $('div.amenities ul.popover li input').bind('click', function () {
+    // Grabs attribute value from the input tag
     let id = $(this).attr('data-id');
     let name = $(this).attr('data-name');
+
+    // If input is checked, store attributes in the amenity object
     if ($(this).is(':checked')) {
       amenityObj[id] = name;
     } else {
       delete amenityObj[id];
     }
 
-    // Creates new array with values of amenityObj
+    // Creates new array from amenity object
     let newAmenityArray = $.map(amenityObj, function (value) {
       return value;
     }).sort().join(', ');
