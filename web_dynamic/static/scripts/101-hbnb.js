@@ -1,5 +1,12 @@
 // Only load when document is ready
 $(document).ready(function () {
+  // Request API http://0.0.0.0:5001/api/v1/status/
+  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, textStatus) {
+    if (textStatus === 'success') {
+      $('div#api_status').toggleClass('available');
+    }
+  });
+
   // Creates stateObj
   let stateObj = {};
 
@@ -83,15 +90,6 @@ $(document).ready(function () {
       $('div.amenities h4').text(newAmenityArray);
     } else {
       $('div.amenities h4').text('\u00A0');
-    }
-  });
-
-  // Request API http://0.0.0.0:5001/api/v1/status/
-  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, textStatus) {
-    if (textStatus === 'success') {
-      $('div#api_status').addClass('available');
-    } else {
-      $('div#api_status').removeClass('available');
     }
   });
 
@@ -181,40 +179,74 @@ $(document).ready(function () {
           placeInfo.append(amenitiesInfo);
         });
 
-        // Creates reviews object based on a place
-        let reviewsPlace = {};
+        // Creates reviews objects based on a place
+        let reviewsPlaceText = {};
+        let reviewsPlaceDate = {};
+        let reviewsPlaceUser = {};
 
         // Get request to grab all reviews for each place
         $.get('http://0.0.0.0:5001/api/v1/places/' + place.id + '/reviews', {}).done(function (data) {
           for (let i = 0; i < data.length; i++) {
-            reviewsPlace['user_id'] = data[i].user_id;
-            reviewsPlace['text'] = data[i].text;
+            reviewsPlaceText[data[i].user_id] = data[i].text;
+
+          // Creates new user object with all users in one review
+            if (usersPerPlaceObj[data[i].user_id]) { reviewsPlaceUser[data[i].user_id] = usersPerPlaceObj[data[i].user_id]; }
 
             // Converts UTC time to long format, grabbing only Month, Date and Year. Ex: Mar 25 2017
             let dateString = new Date(data[i].created_at).toString().split(' ');
             dateString = dateString[1] + ' ' + dateString[2] + ' ' + dateString[3];
 
-            reviewsPlace['created_at'] = dateString;
+            reviewsPlaceDate[data[i].user_id] = dateString;
           }
 
+          //
+          let reviewsCount = data.length;
+
           // Variable with main review's information, append to div
-          let reviewsInfo = $('<div>', {class: 'reviews'}).append($('<h2>', {text: 'Reviews'}).append($('<span>', {text: 'Show'})));
+          let reviewsInfo = $('<div>', {class: 'reviews'}).append($('<h2>', {text: reviewsCount + ' Reviews'}).append($('<span>', {text: 'Show'})));
 
           // Creates the ul tag with class toggle_reviews - allows user to toggle the reviews (show/hide)
           let ulTag = $('<ul>', {class: 'toggle_reviews'});
 
-          // Checks if place has a review from a user, only grab the reviewer's info if the result is true
-          if (usersPerPlaceObj[reviewsPlace.user_id]) {
-            let userInfo = $('<h3>', {text: 'From ' + usersPerPlaceObj[reviewsPlace.user_id] + ' on ' + reviewsPlace.created_at});
+          // Initialize variable to put together each review
+          let reviewer = '';
+          let reviewDate = '';
+          let review = '';
 
-            // Creates a wrap to wrap the reviewer's info in a li tag
-            let userWrap = $('<li>');
-            userWrap.append(userInfo);
-            ulTag.append(userWrap);
+          // Array to store each review object
+          let reviewArr = [];
 
-            // Variable with the review's text, append to the ul tag
-            let userReview = $('<p>', {text: reviewsPlace.text});
-            ulTag.append(userReview);
+          // Traverse over all the users in each review
+          for (let key in reviewsPlaceUser) {
+            // If the key matches, then create the object
+            if (reviewsPlaceUser.hasOwnProperty(key) === reviewsPlaceDate.hasOwnProperty(key)) {
+              reviewer = reviewsPlaceUser[key];
+              reviewDate = reviewsPlaceDate[key];
+              review = reviewsPlaceText[key];
+            }
+            // Push each review object to the review array
+            reviewArr.push({'name': reviewer, 'text': review, 'date': reviewDate});
+          }
+
+          // Checks if place has at least one review
+          if (reviewArr.length > 0) {
+            // Traverse over the review array
+            for (let i = 0; i < reviewArr.length; i++) {
+              // Creates the user's info
+              let userInfo = $('<h3>', {text: 'From ' + reviewArr[i].name + ' on ' + reviewArr[i].date});
+
+              // Creates a wrap to wrap the reviewer's info in a li tag
+              let userWrap = $('<li>');
+              userWrap.append(userInfo);
+              ulTag.append(userWrap);
+
+              // Converts text in reviewsPlace to html
+              let reviewsText = $('<p>').html(reviewArr[i].text);
+
+              // Variable with the review's text, append to the ul tag
+              let userReview = $(reviewsText);
+              ulTag.append(userReview);
+            }
           }
 
           // Append complete ul tag to reviews - then append to main place tag
