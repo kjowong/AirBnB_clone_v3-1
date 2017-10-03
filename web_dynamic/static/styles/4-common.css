@@ -33,13 +33,29 @@ div.container {
 	align-items: stretch;
 }
 
-main h1.nope {
-	min-width: 100%;
-	text-align: center;
+div.nope-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	max-width: 1000px;
+	margin: 30px auto;
+	padding: 20px;
+	border: 1px solid #FF5A5F;
+	border-radius: 4px;
+}
+
+div.nope-container div {
+    flex-grow: 1;
+}
+
+div.nope-container h1.nope, h3.nope {
+    margin: 0 auto;
+    text-align: center;
 }
 
 img#fail-img {
-	max-width: 35%;
 	margin: auto;
-	display: block;
+	max-width: 35%;
 }

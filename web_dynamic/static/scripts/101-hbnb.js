@@ -1,4 +1,4 @@
-const failed = '<h1 class="nope">No places found....<img src="../static/images/rage-horror.svg" id="fail-img"></h1><h1 class="nope">Maybe you just fail at life</h1>';
+const failed = '<div class="nope-container"><div><h1 class="nope">No Places Found.</h1><h3 class="nope">Maybe you just fail at life.</h3></div><img src="../static/images/rage-horror.svg" id="fail-img"></div>';
 
 // Only load when document is ready
 $(document).ready(function () {
