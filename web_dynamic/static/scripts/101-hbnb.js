@@ -121,7 +121,7 @@ $(document).ready(function () {
       contentType: 'application/json; charset=utf-8',
       dataType: 'JSON'
     }).done(function (data) {
-      if (data.length === 0) { $(failed).appendTo('main'); }
+      //if (data.length === 0) { $(failed).appendTo('main'); }
       data.sort(nameSort);
 
       // Empties out the place's section
